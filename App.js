@@ -1,12 +1,45 @@
-import { Button, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+
+import { Alert, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+
+import NewTransactionModal from './components/NewTransactionModal';
 import TransactionInfo from './components/TransactionInfo';
+import TransactionInfoModal from './components/TransactionInfoModal';
 import { transactions } from './data/transactions';
 import formatCurrency from './utils/formatCurrency';
+import generateUUID from './utils/generateUUID';
 
 export default function App() {
+  const [transactionToShow, setTransactionToShow] = useState(null);
+  const [isNewModalVisible, setIsNewModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const currentBalance = transactions.reduce((total, transaction) => total + ( transaction.type === 'EXPENSE' ? transaction.price * -1 : transaction.price), 0);
+
+  function handleSaveTransaction({name, description, type, price}) {
+    if (!name || !type || !price) {
+      Alert.alert('Preencha os campos obrigatórios!');
+      return;
+    }
+    const transaction = {
+      id: generateUUID(), 
+      name, 
+      description, 
+      type, 
+      price
+    };
+    transactions.push(transaction);
+    setIsNewModalVisible(false);
+  }
+
+  function handlePressTransaction(transaction) {
+    setTransactionToShow(transaction);
+    setIsModalVisible(true);
+  }
+
   return (
     <SafeAreaView style={styles.base}>
+      <NewTransactionModal isVisible={isNewModalVisible} setIsVisible={setIsNewModalVisible} onPressSave={handleSaveTransaction}/>
+      <TransactionInfoModal isVisible={isModalVisible} transaction={transactionToShow} setIsVisible={setIsModalVisible} />
       <View style={styles.container}>
         <View style={styles.row}>
           <Text style={styles.title}>Movimentações</Text>
@@ -14,13 +47,15 @@ export default function App() {
         </View>
         <ScrollView>
           {transactions.map(transaction => (
-            <TransactionInfo key={transaction.id} transaction={transaction} />
+            <TransactionInfo key={transaction.id} transaction={transaction} onPress={handlePressTransaction} />
           ))}
         </ScrollView>
       </View>
-      <View style={styles.bottom}>
-        <Button style={styles.button} title='+' />
-      </View>
+      <Pressable style={styles.bottom} onPress={() => setIsNewModalVisible(true)}>
+        <Text style={styles.button}>
+          +
+        </Text>
+      </Pressable>
     </SafeAreaView>
   );
 }
@@ -58,8 +93,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    backgroundColor: '#2e825d',
-    fontSize: 48
+    color: '#2e825d',
+    fontSize: 36
   },
   row: {
     alignItems: 'center',

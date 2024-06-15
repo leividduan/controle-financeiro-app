@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import formatCurrency from '../utils/formatCurrency';
 
-export default function TransactionInfo({ transaction }) {
+export default function TransactionInfo({ transaction, onPress }) {
   return (
-    <View style={styles.item}>
-      <Text style={styles.title}>{transaction.title}</Text>
+    <Pressable style={styles.item} onPress={() => onPress(transaction)}>
+      <Text style={styles.title}>{transaction.name}</Text>
       <View style={styles.info}>
         <Text style={styles[transaction.type === 'EXPENSE' ? 'expense' : 'income']}>{formatCurrency(transaction.price)}</Text>
       </View>
-    </View>
+    </Pressable>
   )
 }
 
