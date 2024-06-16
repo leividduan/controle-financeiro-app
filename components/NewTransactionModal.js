@@ -82,20 +82,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    marginBottom: 12
+    marginBottom: 12,
   },
   bottom: {
-    backgroundColor: '#58c184',
+    backgroundColor: '#5AC6B9',
     marginTop: 12,
     maxHeight: 52,
     height: 48,
-    borderRadius: 8,
+    borderRadius: 15,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   button: {
-    color: '#2e825d',
+    color: '#fff',
     fontSize: 16
   }
 });
